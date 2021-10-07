@@ -1,0 +1,21 @@
+[
+  {
+    "guest2": {
+      "guaranteeFee": "100000",
+      "phoneNumber": "01234556822",
+      "name": "Lux",
+      "methodPayment": "credit card",
+      "bookingCode": "#0182",
+      "dayArrival": "18\/12\/2021"
+    },
+    "guest1": {
+      "guaranteeFee": "0",
+      "phoneNumber": "01234556821",
+      "name": "Jame",
+      "methodPayment": "cash",
+      "bookingCode": "#0192",
+      "dayArrival": "15\/12\/2021"
+    }
+  },
+  {}
+]

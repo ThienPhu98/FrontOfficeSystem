@@ -1,0 +1,86 @@
+[
+  {
+    "room": {
+      "name": "101",
+      "guest": null,
+      "status": false
+    }
+  },
+  {
+    "room": {
+      "name": "102",
+      "guest": null,
+      "status": false
+    }
+  },
+  {
+    "room": {
+      "name": "103",
+      "guest": null,
+      "status": false
+    }
+  },
+  {
+    "room": {
+      "name": "201",
+      "guest": null,
+      "status": false
+    }
+  },
+  {
+    "room": {
+      "name": "202",
+      "guest": null,
+      "status": false
+    }
+  },
+  {
+    "room": {
+      "name": "203",
+      "guest": null,
+      "status": false
+    }
+  },
+  {
+    "room": {
+      "name": "301",
+      "guest": null,
+      "status": false
+    }
+  },
+  {
+    "room": {
+      "name": "302",
+      "guest": null,
+      "status": false
+    }
+  },
+  {
+    "room": {
+      "name": "303",
+      "guest": null,
+      "status": false
+    }
+  },
+  {
+    "room": {
+      "name": "304",
+      "guest": null,
+      "status": false
+    }
+  },
+  {
+    "room": {
+      "name": "401",
+      "guest": null,
+      "status": false
+    }
+  },
+  {
+    "room": {
+      "name": "402",
+      "guest": null,
+      "status": false
+    }
+  }
+]

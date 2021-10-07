@@ -1,4 +1,4 @@
-package FrontOfficeSystem;
+package FrontOfficeSystem.Model;
 
 public class Staff {
     String name;

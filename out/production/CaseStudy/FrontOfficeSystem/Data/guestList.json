@@ -1,21 +1,42 @@
 [
   {
-    "guest2": {
-      "guaranteeFee": "100000",
-      "phoneNumber": "01234556822",
-      "name": "Lux",
-      "methodPayment": "credit card",
-      "bookingCode": "#0182",
-      "dayArrival": "18\/12\/2021"
-    },
-    "guest1": {
-      "guaranteeFee": "0",
-      "phoneNumber": "01234556821",
-      "name": "Jame",
-      "methodPayment": "cash",
-      "bookingCode": "#0192",
+    "guest": {
+      "guaranteeFee": "91,283,412",
+      "phoneNumber": "01231231232",
+      "name": "Nguyen Phan Thien Phu",
+      "methodPayment": "credit-card",
+      "bookingCode": "#10181",
       "dayArrival": "15\/12\/2021"
     }
   },
-  {}
+  {
+    "guest": {
+      "guaranteeFee": "8,928,134",
+      "phoneNumber": "09813284122",
+      "name": "Diep Bao Vy",
+      "methodPayment": "credit-card",
+      "bookingCode": "#22955",
+      "dayArrival": "18\/12\/2021"
+    }
+  },
+  {
+    "guest": {
+      "guaranteeFee": "1,382,391,412",
+      "phoneNumber": "09123412332",
+      "name": "John Seanna",
+      "methodPayment": "credit-card",
+      "bookingCode": "#28341",
+      "dayArrival": "17\/2\/2022"
+    }
+  },
+  {
+    "guest": {
+      "guaranteeFee": "91,238,123",
+      "phoneNumber": "01293128423",
+      "name": "David John",
+      "methodPayment": "cash",
+      "bookingCode": "#51300",
+      "dayArrival": "1\/12\/2022"
+    }
+  }
 ]

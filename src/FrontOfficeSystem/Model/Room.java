@@ -40,7 +40,12 @@ public class Room {
 
     @Override
     public String toString() {
-        return "RoomNumber= '" + number +"', isVacant= '" + isVacant + "'" +
-                ", guest= {name: " + guest.getName() + ", day arrival = "+ guest.getDayArrival() +"}";
+        if (this.guest == null) {
+            return "RoomNumber= '" + number +"', isVacant= '" + isVacant + "'" +
+                    ", doesn't have guest";
+        } else {
+            return "RoomNumber= '" + number +"', isVacant= '" + isVacant + "'" +
+                    ", guest= {name: " + guest.getName() + ", day arrival = "+ guest.getDayArrival() +"}";
+        }
     }
 }

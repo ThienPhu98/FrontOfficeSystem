@@ -3,30 +3,14 @@
     "room": {
       "name": "101",
       "guest": null,
-      "status": true
+      "status": false
     }
   },
   {
     "room": {
       "name": "102",
-      "guest": name=
-      'Nguyen Phan Thien Phu'
-      phoneNumber
-      =
-      '01231231232'
-      dayArrival
-      =
-      '15/12/2021'
-      guaranteeFee
-      =
-      '91,283,412 VND'
-      methodPayment
-      =
-      'credit-card'
-      bookingCode
-      =
-      '#10181',
-      "status": false
+      "guest": null,
+      "status": true
     }
   },
   {

@@ -74,7 +74,7 @@ public class Guest {
         return "\nname='" + name + "'" +
                 "\nphoneNumber = '" + phoneNumber + "'" +
                 "\ndayArrival = '" + dayArrival + "'" +
-                "\nguaranteeFee = '" + guaranteeFee + "'" +
+                "\nguaranteeFee = '" + guaranteeFee + " VND'" +
                 "\nmethodPayment = '" + methodPayment + "'" +
                 "\nbookingCode = '" + bookingCode + "'";
     }

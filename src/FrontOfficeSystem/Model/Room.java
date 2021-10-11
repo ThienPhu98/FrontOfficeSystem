@@ -2,16 +2,16 @@ package FrontOfficeSystem.Model;
 
 public class Room {
     String number;
-    boolean isVacant;
-    Guest guest;
+    boolean isVacant = true;
+    String guestID;
 
-    public Room() {
-    }
-
-    public Room(String number, boolean isVacant, Guest guest) {
+    public Room(String number, boolean isVacant, String guestID) {
         this.number = number;
         this.isVacant = isVacant;
-        this.guest = guest;
+        this.guestID = guestID;
+    }
+
+    public Room() {
     }
 
     public String getNumber() {
@@ -30,22 +30,20 @@ public class Room {
         isVacant = vacant;
     }
 
-    public Guest getGuest() {
-        return guest;
+    public String getGuestID() {
+        return guestID;
     }
 
-    public void setGuest(Guest guest) {
-        this.guest = guest;
+    public void setGuestID(String guestID) {
+        this.guestID = guestID;
     }
 
     @Override
     public String toString() {
-        if (this.guest == null) {
-            return "RoomNumber= '" + number +"', isVacant= '" + isVacant + "'" +
-                    ", doesn't have guest";
+        if (isVacant) {
+            return "Room " + number + ": {Room is empty}";
         } else {
-            return "RoomNumber= '" + number +"', isVacant= '" + isVacant + "'" +
-                    ", guest= {name: " + guest.getName() + ", day arrival = "+ guest.getDayArrival() +"}";
+            return "Room " + number + ": {Room has guest, GuestID: " + guestID +"}";
         }
     }
 }

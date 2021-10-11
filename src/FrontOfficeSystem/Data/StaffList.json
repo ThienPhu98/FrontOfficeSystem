@@ -1,0 +1,65 @@
+[
+  {
+    "staff": {
+      "password": "sparta1510",
+      "level": "manager",
+      "name": "Nguyen Phan Thien Phu",
+      "history": "",
+      "ID": 63840
+    }
+  },
+  {
+    "staff": {
+      "password": "albatrap231",
+      "level": "manager",
+      "name": "David Villa",
+      "history": "",
+      "ID": 24505
+    }
+  },
+  {
+    "staff": {
+      "password": "bestmen2021",
+      "level": "staff",
+      "name": "Kaka",
+      "history": "",
+      "ID": 102834
+    }
+  },
+  {
+    "staff": {
+      "password": "slovakiaNokia22",
+      "level": "staff",
+      "name": "Ederson Arsnol",
+      "history": "",
+      "ID": 62263
+    }
+  },
+  {
+    "staff": {
+      "password": "Jamedeptrai2021",
+      "level": "staff",
+      "name": "Luka Jame",
+      "history": "",
+      "ID": 26849
+    }
+  },
+  {
+    "staff": {
+      "password": "Lampart81",
+      "level": "staff",
+      "name": "Pillip Lamp",
+      "history": "",
+      "ID": 88547
+    }
+  },
+  {
+    "staff": {
+      "password": "Hauhuhong2021",
+      "level": "staff",
+      "name": "Nguyen Van Hau",
+      "history": "",
+      "ID": 39692
+    }
+  }
+]

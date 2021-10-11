@@ -1,0 +1,22 @@
+[
+  {
+    "guest": {
+      "guaranteeFee": "1,837,123",
+      "phoneNumber": "01931421121",
+      "name": "David Luis",
+      "methodPayment": "cash",
+      "bookingCode": "#18104",
+      "dayArrival": "11\/10\/2021"
+    }
+  },
+  {
+    "guest": {
+      "guaranteeFee": "182,394,123",
+      "phoneNumber": "01231419232",
+      "name": "John Alert",
+      "methodPayment": "credit-card",
+      "bookingCode": "#35217",
+      "dayArrival": "21\/10\/2022"
+    }
+  }
+]

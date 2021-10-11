@@ -6,6 +6,6 @@ public interface ISystemProcess {
     void checkInMenu();
     void checkOut();
     void showRoomStatus();
-    void showHistory();
+    void informationMenu();
     void showBookingStatus();
 }

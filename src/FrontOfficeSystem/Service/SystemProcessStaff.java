@@ -13,11 +13,10 @@ import java.util.regex.*;
 import static FrontOfficeSystem.Service.SignIn.*;
 
 public class SystemProcessStaff implements ISystemProcess {
-    static Staff staff = new Staff();
-    static String staffID = staff.getID();
+    static Staff staff;
     static Scanner input = new Scanner(System.in);
     static DecimalFormat formatter = new DecimalFormat("###,###,###");
-    static final int backToMainMenu = 66;
+    static final int backToThePreviousMenu = 66;
     static String dataFolder = "H:\\Study & Working\\module2\\CaseStudy\\src\\FrontOfficeSystem\\Data\\";
     static String fileBookingGuestList = "BookingList.json";
     static String fileRoomList = "RoomList.json";
@@ -122,7 +121,7 @@ public class SystemProcessStaff implements ISystemProcess {
                     case checkInNonReservation:
                         checkInWithoutReservation();
                         break;
-                    case backToMainMenu:
+                    case backToThePreviousMenu:
                         isOutCheckIn = true;
                         mainMenu();
                         break;
@@ -187,7 +186,7 @@ public class SystemProcessStaff implements ISystemProcess {
                             }
                         }
                         break;
-                    case backToMainMenu:
+                    case backToThePreviousMenu:
                         mainMenu();
                         break;
                     default:
@@ -323,17 +322,23 @@ public class SystemProcessStaff implements ISystemProcess {
                 final int changePassword = 80;
                 switch (option) {
                     case history:
+                        ArrayList<Staff> staffList = outPutStaffFileToList();
+                        String staffID = staff.getID();
                         System.out.print("\n_____________________Your-History___________________");
-                        if (staff.getHistory().length() == 0) {
-                            System.out.print("\nYour history is empty!");
-                        } else {
-                            System.out.print("\n" + staff.getHistory());
+                        for(Staff staff : staffList) {
+                            if (staff.getID().equals(staffID)) {
+                                if (staff.getHistory().equals("empty")) {
+                                    System.out.print("\nYour history is empty!");
+                                } else {
+                                    System.out.print("\n" + staff.getHistory());
+                                }
+                            }
                         }
                         informationMenu();
                         break;
                     case changePassword:
+                        ArrayList<Staff> staffListPass = outPutStaffFileToList();
                         boolean isPassWordValid = false;
-                        ArrayList<Staff> staffList = new ArrayList<>();
                         while (!isPassWordValid) {
                             System.out.print("\n_________________Change-Your-Password_______________");
                             System.out.print("\nEnter your new password or 'B' to back info menu: ");
@@ -345,41 +350,42 @@ public class SystemProcessStaff implements ISystemProcess {
                                 System.out.print("\nYour new password is same with your old one!");
                             } else {
                                 isPassWordValid = true;
-                                for (Staff staff: staffList) {
+                                for (Staff staff: staffListPass) {
                                     if (staff.getPassword().equals(password)) {
                                         isPassWordValid = false;
                                     }
                                 }
                                 if (!isPassWordValid) {
-                                    System.out.print("Your new password is invalid! please try again!");
+                                    System.out.print("\nYour new password is invalid! please try again!");
                                 } else {
                                     Pattern pattern = Pattern.compile("^[a-zA-Z0-9]{7,12}$");
                                     Matcher matcher = pattern.matcher(password);
                                     if (matcher.matches()) {
-                                        for (Staff staff : staffList) {
-                                            if (staff.getID().equals(staffID)) {
+                                        String staffIDPass = staff.getID();
+                                        for (Staff staff : staffListPass) {
+                                            if (staff.getID().equals(staffIDPass)) {
                                                 staff.setPassword(password);
                                             }
                                         }
-                                        writeStaffListToFile(staffList);
+                                        writeStaffListToFile(staffListPass);
                                         informationMenu();
                                     } else {
-                                        System.out.print("Your new password is invalid! password must be a-z with 0-9 and 7 to 12 character!");
+                                        System.out.print("\nYour new password is invalid! password must be a-z with 0-9 and 7 to 12 character!");
                                         isPassWordValid = false;
                                     }
                                 }
                             }
                         }
                         break;
-                    case backToMainMenu:
+                    case backToThePreviousMenu:
                         isOutinformationMenu = true;
                         mainMenu();
                         break;
                     default:
-                        System.out.print("Request undefined! Please follow the instruction!");
+                        System.out.print("\nRequest undefined! Please follow the instruction!");
                 }
             } else {
-                System.out.print("Request undefined! Please follow the instruction!");
+                System.out.print("\nRequest undefined! Please follow the instruction!");
             }
         }
     }
@@ -1056,7 +1062,7 @@ public class SystemProcessStaff implements ISystemProcess {
                         }
                         isInfoCorrect = true;
                         break;
-                    case backToMainMenu:
+                    case backToThePreviousMenu:
                         isInfoCorrect = true;
                         mainMenu();
                         break;
@@ -1071,10 +1077,17 @@ public class SystemProcessStaff implements ISystemProcess {
     }
 
     public void addStaffHistory(String history) {
+        String staffID = staff.getID();
         ArrayList<Staff> staffList = outPutStaffFileToList();
         for (Staff staff: staffList) {
             if (staff.getID().equals(staffID)) {
-                staff.setHistory(history + "\n");
+                if (staff.getHistory().equals("empty")){
+                    staff.setHistory(history);
+                } else {
+                    String historyAdd = staff.getHistory();
+                    historyAdd +="\n" + history;
+                    staff.setHistory(historyAdd);
+                }
             }
         }
         writeStaffListToFile(staffList);

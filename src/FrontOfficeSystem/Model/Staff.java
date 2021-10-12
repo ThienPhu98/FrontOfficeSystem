@@ -39,7 +39,7 @@ public class Staff {
     }
 
     public void setHistory(String history) {
-        this.history += history;
+        this.history = history;
     }
 
     public String getLevel() {

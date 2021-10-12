@@ -13,13 +13,13 @@ public class WriteStaffInformationFile {
     static String fileStaffList = "StaffList.json";
 
     public static void main(String[] args) {
-        Staff staff1 = new Staff("Nguyen Phan Thien Phu", "sparta1510", "", "manager", null);
-        Staff staff2 = new Staff("David Villa", "albatrap231", "", "manager", null);
-        Staff staff3 = new Staff("Kaka", "bestmen2021", "", "staff", null);
-        Staff staff4 = new Staff("Ederson Arsnol", "slovakiaNokia22", "", "staff", null);
-        Staff staff5 = new Staff("Luka Jame", "Jamedeptrai2021", "", "staff", null);
-        Staff staff6 = new Staff("Pillip Lamp", "Lampart81", "", "staff", null);
-        Staff staff7 = new Staff("Nguyen Van Hau", "Hauhuhong2021", "", "staff", null);
+        Staff staff1 = new Staff("Nguyen Phan Thien Phu", "sparta1510", "empty", "manager", null);
+        Staff staff2 = new Staff("David Villa", "albatrap231", "empty", "manager", null);
+        Staff staff3 = new Staff("Kaka", "bestmen2021", "empty", "staff", null);
+        Staff staff4 = new Staff("Ederson Arsnol", "slovakiaNokia22", "empty", "staff", null);
+        Staff staff5 = new Staff("Luka Jame", "Jamedeptrai2021", "empty", "staff", null);
+        Staff staff6 = new Staff("Pillip Lamp", "Lampart81", "empty", "staff", null);
+        Staff staff7 = new Staff("Nguyen Van Hau", "Hauhuhong2021", "empty", "staff", null);
 
         ArrayList<Staff> staffList = new ArrayList<>();
         staffList.add(staff1);
@@ -33,12 +33,13 @@ public class WriteStaffInformationFile {
         JSONArray staffJSONList = new JSONArray();
         for (Staff staff : staffList) {
             int randomNumber = (int) (Math.random() * 99999) + 10000;
+            String staffID = String.valueOf(randomNumber);
             JSONObject staffDetail = new JSONObject();
             staffDetail.put("name", staff.getName());
             staffDetail.put("password", staff.getPassword());
             staffDetail.put("history", staff.getHistory());
             staffDetail.put("level", staff.getLevel());
-            staffDetail.put("ID", randomNumber);
+            staffDetail.put("ID", staffID);
 
             JSONObject staffJSON = new JSONObject();
             staffJSON.put("staff", staffDetail);

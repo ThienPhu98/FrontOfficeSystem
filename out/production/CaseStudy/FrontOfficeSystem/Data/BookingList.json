@@ -1,1 +1,42 @@
-[{"guest":{"guaranteeFee":"0","phoneNumber":"08792384232","name":"Shen Ching","methodPayment":"cash","bookingCode":"#77468","dayArrival":"01\/4\/2022"}}]
+[
+  {
+    "guest": {
+      "guaranteeFee": "78,888,687",
+      "phoneNumber": "01239134323",
+      "name": "John Brow",
+      "methodPayment": "credit-card",
+      "bookingCode": "#35796",
+      "dayArrival": "19\/10\/2021"
+    }
+  },
+  {
+    "guest": {
+      "guaranteeFee": "8,231,452",
+      "phoneNumber": "01239141232",
+      "name": "Nguyen Thanh Dat",
+      "methodPayment": "cash",
+      "bookingCode": "#39686",
+      "dayArrival": "15\/12\/2021"
+    }
+  },
+  {
+    "guest": {
+      "guaranteeFee": "0",
+      "phoneNumber": "08792384232",
+      "name": "Shen Ching",
+      "methodPayment": "cash",
+      "bookingCode": "#77468",
+      "dayArrival": "01\/4\/2022"
+    }
+  },
+  {
+    "guest": {
+      "guaranteeFee": "128,312,323",
+      "phoneNumber": "01391243232",
+      "name": "Lamp Tender",
+      "methodPayment": "cash",
+      "bookingCode": "#61791",
+      "dayArrival": "18\/2\/2022"
+    }
+  }
+]

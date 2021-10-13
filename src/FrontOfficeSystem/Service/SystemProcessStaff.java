@@ -30,16 +30,17 @@ public class SystemProcessStaff implements ISystemProcess {
     public void mainMenu() {
         boolean isOutMainMenuStaff = false;
         do {
-            System.out.print("\n====================================================");
-            System.out.print("\n||___________________MAIN-MENU____________________||");
-            System.out.print("\n|| 1. Enter character B to Booking                ||");
-            System.out.print("\n|| 2. Enter character I to Check-in               ||");
-            System.out.print("\n|| 3. Enter character O to Check-out              ||");
-            System.out.print("\n|| 4. Enter character R to Room's Status          ||");
-            System.out.print("\n|| 5. Enter character Y to Your Information       ||");
-            System.out.print("\n|| 6. Enter character G to Booking Status         ||");
-            System.out.print("\n|| 7. Enter character E to exit & back to Sign-in ||");
-            System.out.print("\n====================================================");
+            System.out.print("\n============================================================================");
+            System.out.print("\n|| Welcome " + staff.getName());
+            System.out.print("\n||_______________________________MAIN-MENU________________________________||");
+            System.out.print("\n|| 1. Enter character B to Booking                                        ||");
+            System.out.print("\n|| 2. Enter character I to Check-in                                       ||");
+            System.out.print("\n|| 3. Enter character O to Check-out                                      ||");
+            System.out.print("\n|| 4. Enter character R to Room's Status                                  ||");
+            System.out.print("\n|| 5. Enter character Y to Your Information                               ||");
+            System.out.print("\n|| 6. Enter character G to Booking Status                                 ||");
+            System.out.print("\n|| 7. Enter character E to exit & back to Sign-in                         ||");
+            System.out.print("\n============================================================================");
             System.out.print("\nEnter your choice: ");
             String choice = input.nextLine();
             if (choice.length() == 1) {
@@ -92,7 +93,7 @@ public class SystemProcessStaff implements ISystemProcess {
         inPutBookingListToFile(guest);
         String history = "Get booking for guest with Booking Code: " + guest.getBookingCode();
         addStaffHistory(history);
-        System.out.print("\n-------------Booking successful!---------------");
+        System.out.print("\n-------------------------------BOOKING-SUCCESS------------------------------");
         mainMenu();
     }
 
@@ -100,12 +101,12 @@ public class SystemProcessStaff implements ISystemProcess {
     public void checkInMenu() {
         boolean isOutCheckIn = false;
         do {
-            System.out.print("\n==================================================================");
-            System.out.print("\n__________________________CHECK-IN________________________________");
-            System.out.print("\n||1. Enter 'R' to check-in for guest have reservation           ||");
-            System.out.print("\n||2. Enter 'N' to check-in for guest doesn't have reservation   ||");
-            System.out.print("\n||3. Enter 'B' to back to main menu                             ||");
-            System.out.print("\n------------------------------------------------------------------");
+            System.out.print("\n============================================================================");
+            System.out.print("\n______________________________CHECK-IN-MENU_________________________________");
+            System.out.print("\n|| 1. Enter 'R' to check-in for guest have reservation                    ||");
+            System.out.print("\n|| 2. Enter 'N' to check-in for guest doesn't have reservation            ||");
+            System.out.print("\n|| 3. Enter 'B' to back to main menu                                      ||");
+            System.out.print("\n----------------------------------------------------------------------------");
             System.out.print("\n||Enter your choice: ");
             String choice = input.nextLine();
             if (choice.length() == 1) {
@@ -138,12 +139,12 @@ public class SystemProcessStaff implements ISystemProcess {
     public void checkInWithReservation() {
         boolean isOutCheckInSystem = false;
         do {
-            System.out.print("\n==================================================================");
-            System.out.print("\n_________________LOOKING-FOR-RESERVATION__________________________");
-            System.out.print("\n||1. Enter 'N' to find reservation by name                      ||");
-            System.out.print("\n||2. Enter 'C' to find reservation by booking code              ||");
-            System.out.print("\n||3. Enter 'B' to back to Check-in menu                         ||");
-            System.out.print("\n------------------------------------------------------------------");
+            System.out.print("\n============================================================================");
+            System.out.print("\n__________________________LOOKING-FOR-RESERVATION___________________________");
+            System.out.print("\n|| 1. Enter 'N' to find reservation by name                               ||");
+            System.out.print("\n|| 2. Enter 'C' to find reservation by booking code                       ||");
+            System.out.print("\n|| 3. Enter 'B' to back to Check-in menu                                  ||");
+            System.out.print("\n----------------------------------------------------------------------------");
             System.out.print("\n||Enter your choice: ");
             String choice = input.nextLine();
             if (choice.length() == 1) {
@@ -211,8 +212,8 @@ public class SystemProcessStaff implements ISystemProcess {
         ArrayList<Guest> inHouseList = outPutInHouseFileToList();
         boolean isRoomNumberValid = false;
         String roomNumber = "";
-        System.out.print("\n==================================================================");
-        System.out.print("\n__________________________CHECK-OUT_______________________________");
+        System.out.print("\n============================================================================");
+        System.out.print("\n_______________________________CHECK-OUT____________________________________");
         do {
             System.out.print("\n||Enter guest's room or press 'B' to back to main menu: ");
             String choice = input.nextLine();
@@ -236,8 +237,7 @@ public class SystemProcessStaff implements ISystemProcess {
                 }
             }
         } while (!isRoomNumberValid);
-
-        System.out.print("\n_______________________CONFIRM-CHECK-OUT__________________________");
+        System.out.print("\n______________________________CONFIRM-CHECK-OUT_____________________________");
         System.out.print("\n||Room" + roomNumber + ": ");
         String guestBookingCode = "";
         for (Room room : roomList) {
@@ -250,7 +250,7 @@ public class SystemProcessStaff implements ISystemProcess {
                 }
             }
         }
-        System.out.print("\n------------------------------------------------------------------");
+        System.out.print("\n----------------------------------------------------------------------------");
         boolean isConfirmAccept = false;
         do {
             System.out.print("\nPress 'Y' to accept check-Out guest or 'B' to back to Check-Out menu: ");
@@ -260,7 +260,7 @@ public class SystemProcessStaff implements ISystemProcess {
                 checkOutGuestToRoom(roomNumber);
                 String history = "Check-out guest with booking-code: " + guestBookingCode;
                 addStaffHistory(history);
-                System.out.print("\n_______________________CHECK-OUT-COMPLETED________________________");
+                System.out.print("\n----------------------------CHECK-OUT-COMPLETED-----------------------------");
                 mainMenu();
             } else if (choice.toUpperCase().equals("B")) {
                 isConfirmAccept = true;
@@ -275,8 +275,8 @@ public class SystemProcessStaff implements ISystemProcess {
     public void showRoomStatus() {
         ArrayList<Room> roomList = outPutRoomFileToList();
         ArrayList<Guest> inHouseList = outPutInHouseFileToList();
-        System.out.print("\n==================================================================");
-        System.out.print("\n______________________SHOW-ROOM-STATUS____________________________");
+        System.out.print("\n============================================================================");
+        System.out.print("\n_____________________________SHOW-ROOM-STATUS_______________________________");
         for (Room room : roomList) {
             System.out.print("\n||{" + room.getNumber() + ":");
             if (room.getGuestID() != null) {
@@ -290,7 +290,7 @@ public class SystemProcessStaff implements ISystemProcess {
             }
             System.out.print("}");
         }
-        System.out.print("\n------------------------------------------------------------------");
+        System.out.print("\n----------------------------------------------------------------------------");
         boolean isOutShowRoomStatus = false;
         do {
             System.out.print("\nPress 'B' to back to main menu: ");
@@ -308,12 +308,12 @@ public class SystemProcessStaff implements ISystemProcess {
     public void informationMenu() {
         boolean isOutinformationMenu = false;
         while (!isOutinformationMenu) {
-            System.out.print("\n====================================================");
-            System.out.print("\n_______________Your-Information-Menu________________");
-            System.out.print("\n||1. Enter 'H' to see your history                ||");
-            System.out.print("\n||2. Enter 'P' to change your password            ||");
-            System.out.print("\n||3. Enter 'B' to back to main menu               ||");
-            System.out.print("\n====================================================");
+            System.out.print("\n============================================================================");
+            System.out.print("\n__________________________Your-Information-Menu_____________________________");
+            System.out.print("\n|| 1. Enter 'H' to see your history                                       ||");
+            System.out.print("\n|| 2. Enter 'P' to change your password                                   ||");
+            System.out.print("\n|| 3. Enter 'B' to back to main menu                                      ||");
+            System.out.print("\n============================================================================");
             System.out.print("\nEnter your choice: ");
             String choice = input.nextLine();
             if (choice.length() == 1) {
@@ -324,7 +324,7 @@ public class SystemProcessStaff implements ISystemProcess {
                     case history:
                         ArrayList<Staff> staffList = outPutStaffFileToList();
                         String staffID = staff.getID();
-                        System.out.print("\n_____________________Your-History___________________");
+                        System.out.print("\n_________________________________Your-History_______________________________");
                         for(Staff staff : staffList) {
                             if (staff.getID().equals(staffID)) {
                                 if (staff.getHistory().equals("empty")) {
@@ -340,7 +340,7 @@ public class SystemProcessStaff implements ISystemProcess {
                         ArrayList<Staff> staffListPass = outPutStaffFileToList();
                         boolean isPassWordValid = false;
                         while (!isPassWordValid) {
-                            System.out.print("\n_________________Change-Your-Password_______________");
+                            System.out.print("\n______________________________Change-Your-Password__________________________");
                             System.out.print("\nEnter your new password or 'B' to back info menu: ");
                             String password = input.nextLine();
                             if (password.toUpperCase().equals("B")) {
@@ -392,14 +392,14 @@ public class SystemProcessStaff implements ISystemProcess {
 
     @Override
     public void showBookingStatus() {
-        System.out.print("\n==================================================================");
-        System.out.print("\n________________________BOOKING-STATUS____________________________");
+        System.out.print("\n============================================================================");
+        System.out.print("\n______________________________BOOKING-STATUS________________________________");
         ArrayList<Guest> guestList = outPutBookingFileToList();
         if (guestList.size() != 0) {
             for (Guest guest : guestList) {
                 System.out.print("\n||{" + guest.toString() + "}");
             }
-            System.out.print("\n------------------------------------------------------------------");
+            System.out.print("\n----------------------------------------------------------------------------");
             boolean isBookingCodeValid = false;
             do {
                 System.out.print("\n Enter 'Booking-Code' to change information of 'B' to back to main menu: ");
@@ -417,7 +417,7 @@ public class SystemProcessStaff implements ISystemProcess {
                             guest = changeBookingInformation(guest);
                             String history = "Change booking information with booking code:" + guest.getBookingCode();
                             addStaffHistory(history);
-                            System.out.print("\n________________CHANGE-INFORMATION-COMPLETED______________________");
+                            System.out.print("\n-------------------------CHANGE-INFORMATION-COMPLETED-----------------------");
                         }
                     }
                     if (!isBookingCodeValid) {
@@ -448,17 +448,17 @@ public class SystemProcessStaff implements ISystemProcess {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.print("\n------------------Update Information Successful!------------------");
+            System.out.print("\n--------------------------UPDATE-INFORMATION-SUCCESS------------------------");
             showBookingStatus();
         } else {
             System.out.print("\nNothing to show, It isn't have reservation yet!");
-            System.out.print("\n------------------------------------------------------------------");
+            System.out.print("\n----------------------------------------------------------------------------");
             mainMenu();
         }
     }
 
     public Guest takeGuestInformation() {
-        System.out.print("\n==============================================================");
+        System.out.print("\n============================================================================");
         String guestName = "";
         do {
             System.out.print("\nEnter Guest's name or press B to back Main menu: ");
@@ -886,10 +886,10 @@ public class SystemProcessStaff implements ISystemProcess {
             if (guest.getBookingCode().equals(bookingCode)) {
                 boolean isRoomValid = false;
                 do {
-                    System.out.print("\n-----------------------Guest's Information:---------------------------------");
+                    System.out.print("\n-----------------------------Guest's Information:---------------------------");
                     System.out.print("\n" + guest.toString());
                     System.out.print("\n----------------------------------------------------------------------------");
-                    System.out.print("\n-----------------------Room's Information:----------------------------------");
+                    System.out.print("\n------------------------------Room's Information:---------------------------");
                     showRoomList();
                     System.out.print("\n----------------------------------------------------------------------------");
                     System.out.print("\nEnter number of Room for guest or 'B' to back to Check-in menu: ");
@@ -903,7 +903,7 @@ public class SystemProcessStaff implements ISystemProcess {
                                     checkInGuestToRoom(roomNumber, guest);
                                     String history = "Check-in guest with booking code: " + guest.getBookingCode();
                                     addStaffHistory(history);
-                                    System.out.print("\n-----------------------Check-in Completed---------------------------------");
+                                    System.out.print("\n---------------------------CHECK-IN-SUCCESS---------------------------------");
                                     isRoomValid = true;
                                 }
                             }
@@ -936,17 +936,17 @@ public class SystemProcessStaff implements ISystemProcess {
             final int changeDayArrival = 68;
             final int changeMoneyGuarantee = 71;
             final int changeMethodPayment = 77;
-            System.out.print("\n---------------Confirm information of Guest---------------");
+            System.out.print("\n------------------------Confirm information of Guest------------------------");
             System.out.print(guest.toString());
-            System.out.print("\n----------------------------------------------------------");
-            System.out.print("\n|| 1.Press 'A' to accept                                 ||");
-            System.out.print("\n|| 2.Press 'N' to change Guest's Name                    ||");
-            System.out.print("\n|| 3.Press 'P' to change Guest's Phone Number            ||");
-            System.out.print("\n|| 4.Press 'D' to change Day guest Arrival               ||");
-            System.out.print("\n|| 5.Press 'G' to change MoneyGuarantee                  ||");
-            System.out.print("\n|| 6.Press 'M' to change MethodPayment                   ||");
-            System.out.print("\n|| 7.Press 'B' to cancel and back to main menu           ||");
-            System.out.print("\n----------------------------------------------------------");
+            System.out.print("\n----------------------------------------------------------------------------");
+            System.out.print("\n|| 1.Press 'A' to accept                                                  ||");
+            System.out.print("\n|| 2.Press 'N' to change Guest's Name                                     ||");
+            System.out.print("\n|| 3.Press 'P' to change Guest's Phone Number                             ||");
+            System.out.print("\n|| 4.Press 'D' to change Day guest Arrival                                ||");
+            System.out.print("\n|| 5.Press 'G' to change MoneyGuarantee                                   ||");
+            System.out.print("\n|| 6.Press 'M' to change MethodPayment                                    ||");
+            System.out.print("\n|| 7.Press 'B' to cancel and back to main menu                            ||");
+            System.out.print("\n----------------------------------------------------------------------------");
             System.out.print("\n||Enter your Option: ");
             String choice = input.nextLine();
             if (choice.length() == 1) {

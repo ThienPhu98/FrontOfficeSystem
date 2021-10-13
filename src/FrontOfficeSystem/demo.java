@@ -18,8 +18,19 @@ public class demo {
     }
 
     public static void main(String[] args) {
+        System.out.print("\n__________________________CHECK-IN________________________________");
+        System.out.print("\n_________________LOOKING-FOR-RESERVATION__________________________");
+        System.out.print("\n__________________________CHECK-OUT_______________________________");
+        System.out.print("\n_______________________CHECK-OUT-COMPLETED________________________");
+        System.out.print("\n_______________Your-Information-Menu________________");
+        System.out.print("\n________________________BOOKING-STATUS____________________________");
+        System.out.print("\n------------------Update Information Successful!------------------");
+        System.out.print("\n==============================================================");
+        System.out.print("\n-----------------------Guest's Information:---------------------------------");
         System.out.print("Enter some password: ");
         String password = scanner.nextLine();
         System.out.print("\n" + validDate(password));
     }
+
+
 }

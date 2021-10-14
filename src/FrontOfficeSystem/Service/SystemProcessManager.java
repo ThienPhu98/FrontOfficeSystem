@@ -16,10 +16,10 @@ public class SystemProcessManager extends SystemProcessStaff {
 
     @Override
     public void mainMenu() {
+        System.out.print("\n============================================================================");
+        System.out.print("\n|| Welcome " + staff.getName());
         boolean isOutMainMenuStaff = false;
         do {
-            System.out.print("\n============================================================================");
-            System.out.print("\n|| Welcome " + staff.getName());
             System.out.print("\n||_______________________________MAIN-MENU________________________________||");
             System.out.print("\n|| 1. Enter character B to Booking                                        ||");
             System.out.print("\n|| 2. Enter character I to Check-in                                       ||");
@@ -231,11 +231,22 @@ public class SystemProcessManager extends SystemProcessStaff {
         informationMenu();
     }
 
+    public void showStaffInfo() {
+        ArrayList<Staff> staffList = outPutStaffFileToList();
+        System.out.print("\n============================================================================");
+        System.out.print("\n________________________________All-Staff-Info______________________________");
+        for (Staff staff: staffList) {
+            System.out.print("\n" + staff.toString());
+        }
+        System.out.print("\n============================================================================");
+    }
+
     public void addStaff() {
         ArrayList<Staff> staffList = outPutStaffFileToList();
         System.out.print("\n============================================================================");
         System.out.print("\n_______________________________Add-New-Staff________________________________");
         String staffName = "";
+        boolean isStaffNameValid = false;
         do {
             System.out.print("\nEnter Name for Staff or press B to back to Staff information menu: ");
             String staffInputName = input.nextLine();
@@ -244,9 +255,16 @@ public class SystemProcessManager extends SystemProcessStaff {
             } else if (staffInputName.trim().length() == 0) {
                 System.out.print("\nInput name is invalid! Guest's name can't be null or blank");
             } else {
-                staffName = toTitleCase(staffInputName);
+                Pattern pattern = Pattern.compile("^([A-Za-z]*[ ]?)+$");
+                Matcher matcher = pattern.matcher(staffInputName);
+                if (matcher.matches()) {
+                    staffName = toTitleCase(staffInputName);
+                    isStaffNameValid = true;
+                } else {
+                    System.out.print("\nInput name is invalid! Staff's name can't have number or special character");
+                }
             }
-        } while (staffName.equals(""));
+        } while (!isStaffNameValid);
 
         String password = "";
         boolean isPassWordValid = false;
@@ -337,26 +355,6 @@ public class SystemProcessManager extends SystemProcessStaff {
             }
         }
         informationMenu();
-    }
-
-    public boolean isStaffIDValid(String staffID) {
-        ArrayList<Staff> staffList = outPutStaffFileToList();
-        for (Staff staff : staffList) {
-            if (staff.getID().equals(staffID)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public void showStaffInfo() {
-        ArrayList<Staff> staffList = outPutStaffFileToList();
-        System.out.print("\n============================================================================");
-        System.out.print("\n________________________________All-Staff-Info______________________________");
-        for (Staff staff: staffList) {
-            System.out.print("\n" + staff.toString());
-        }
-        System.out.print("\n============================================================================");
     }
 
     public void removeStaff() {
@@ -456,10 +454,16 @@ public class SystemProcessManager extends SystemProcessStaff {
                             } else if (staffInputName.trim().length() == 0) {
                                 System.out.print("\nInput name is invalid! Guest's name can't be null or blank");
                             } else {
-                                staffName = toTitleCase(staffInputName);
-                                staff.setName(staffName);
-                                System.out.print("\n__________________________CHANGE-STAFF-NAME-SUCCESS_________________________");
-                                staff = changeInformation(staff);
+                                Pattern pattern = Pattern.compile("^([A-Za-z]*[ ]?)+$");
+                                Matcher matcher = pattern.matcher(staffInputName);
+                                if (matcher.matches()) {
+                                    staffName = toTitleCase(staffInputName);
+                                    staff.setName(staffName);
+                                    System.out.print("\n__________________________CHANGE-STAFF-NAME-SUCCESS_________________________");
+                                    staff = changeInformation(staff);
+                                } else {
+                                    System.out.print("\nInput name is invalid! Staff's name can't have number or special character");
+                                }
                             }
                         } while (staffName.equals(""));
                         isOutChangeInformation = true;
@@ -552,5 +556,15 @@ public class SystemProcessManager extends SystemProcessStaff {
             }
         }
         return staff;
+    }
+
+    public boolean isStaffIDValid(String staffID) {
+        ArrayList<Staff> staffList = outPutStaffFileToList();
+        for (Staff staff : staffList) {
+            if (staff.getID().equals(staffID)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

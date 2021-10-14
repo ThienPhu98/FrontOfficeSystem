@@ -28,10 +28,10 @@ public class SystemProcessStaff implements ISystemProcess {
 
     @Override
     public void mainMenu() {
+        System.out.print("\n============================================================================");
+        System.out.print("\n|| Welcome " + staff.getName());
         boolean isOutMainMenuStaff = false;
         do {
-            System.out.print("\n============================================================================");
-            System.out.print("\n|| Welcome " + staff.getName());
             System.out.print("\n||_______________________________MAIN-MENU________________________________||");
             System.out.print("\n|| 1. Enter character B to Booking                                        ||");
             System.out.print("\n|| 2. Enter character I to Check-in                                       ||");
@@ -90,7 +90,7 @@ public class SystemProcessStaff implements ISystemProcess {
     @Override
     public void booking() {
         Guest guest = takeGuestInformation();
-        inPutBookingListToFile(guest);
+        addGuestToBookingFile(guest);
         String history = "Get booking for guest with Booking Code: " + guest.getBookingCode();
         addStaffHistory(history);
         System.out.print("\n-------------------------------BOOKING-SUCCESS------------------------------");
@@ -134,76 +134,6 @@ public class SystemProcessStaff implements ISystemProcess {
                 System.out.print("Request undefined! Please follow the instruction!");
             }
         } while (!isOutCheckIn);
-    }
-
-    public void checkInWithReservation() {
-        boolean isOutCheckInSystem = false;
-        do {
-            System.out.print("\n============================================================================");
-            System.out.print("\n__________________________LOOKING-FOR-RESERVATION___________________________");
-            System.out.print("\n|| 1. Enter 'N' to find reservation by name                               ||");
-            System.out.print("\n|| 2. Enter 'C' to find reservation by booking code                       ||");
-            System.out.print("\n|| 3. Enter 'B' to back to Check-in menu                                  ||");
-            System.out.print("\n----------------------------------------------------------------------------");
-            System.out.print("\n||Enter your choice: ");
-            String choice = input.nextLine();
-            if (choice.length() == 1) {
-                int option = choice.toUpperCase().charAt(0);
-                final int byName = 78;
-                final int byBookingCode = 67;
-
-                switch (option) {
-                    case byName:
-                        isOutCheckInSystem = true;
-                        boolean isNameValid = false;
-                        while (!isNameValid) {
-                            System.out.print("\nEnter guest's name: ");
-                            String name = input.nextLine();
-                            if (name.trim().length() == 0) {
-                                System.out.print("\nGuest's name can't be null or blank");
-                            } else {
-                                checkInGuestByName(name);
-                            }
-                        }
-                        break;
-                    case byBookingCode:
-                        isOutCheckInSystem = true;
-                        boolean isBookingCodeValid = false;
-                        while (!isBookingCodeValid) {
-                            System.out.print("\nEnter guest's booking code: ");
-                            String inputBookingCode = input.nextLine();
-                            if (inputBookingCode.charAt(0) == '#') {
-                                System.out.print("\nBooking Code must be number! please do not enter '#'");
-                            } else {
-                                Pattern pattern = Pattern.compile("\\d*");
-                                Matcher matcher = pattern.matcher(inputBookingCode);
-                                if (matcher.matches()) {
-                                    String bookingCode = "#" + inputBookingCode;
-                                    isBookingCodeValid = true;
-                                    checkInGuestByBookingCode(bookingCode);
-                                } else {
-                                    System.out.print("\nBooking Code must be number!");
-                                }
-                            }
-                        }
-                        break;
-                    case backToThePreviousMenu:
-                        mainMenu();
-                        break;
-                    default:
-                        System.out.print("Request undefined! Please follow the instruction!");
-                }
-            } else {
-                System.out.print("Request undefined! Please follow the instruction!");
-            }
-        } while (!isOutCheckInSystem);
-    }
-
-    public void checkInWithoutReservation() {
-        Guest guest = takeGuestInformation();
-        inPutBookingListToFile(guest);
-        checkInGuestByBookingCode(guest.getBookingCode());
-        mainMenu();
     }
 
     @Override
@@ -457,9 +387,11 @@ public class SystemProcessStaff implements ISystemProcess {
         }
     }
 
+
     public Guest takeGuestInformation() {
         System.out.print("\n============================================================================");
         String guestName = "";
+        boolean isGuestNameValid = false;
         do {
             System.out.print("\nEnter Guest's name or press B to back Main menu: ");
             String inputName = input.nextLine();
@@ -468,9 +400,16 @@ public class SystemProcessStaff implements ISystemProcess {
             } else if (inputName.trim().length() == 0) {
                 System.out.print("\nInput name is invalid! Guest's name can't be null or blank");
             } else {
-                guestName = toTitleCase(inputName);
+                Pattern pattern = Pattern.compile("^([A-Za-z]*[ ]?)+$");
+                Matcher matcher = pattern.matcher(inputName);
+                if (matcher.matches()) {
+                    isGuestNameValid = true;
+                    guestName = toTitleCase(inputName);
+                } else {
+                    System.out.print("\nInput name is invalid! Guest's name can't have number or special character");
+                }
             }
-        } while (guestName.equals(""));
+        } while (!isGuestNameValid);
 
         String inputPhoneNumber = "";
         boolean checkPhoneNumber = false;
@@ -556,377 +495,6 @@ public class SystemProcessStaff implements ISystemProcess {
         return guest;
     }
 
-    public String toTitleCase(String inputString) {
-        String[] arr = inputString.split(" ");
-        StringBuffer stringBuffer = new StringBuffer();
-
-        for (int i = 0; i < arr.length; i++) {
-            stringBuffer.append(Character.toUpperCase(arr[i].charAt(0)))
-                    .append(arr[i].substring(1)).append(" ");
-        }
-        return stringBuffer.toString().trim();
-    }
-
-    public boolean isBookingCodeSuitable(String bookingCode) {
-        ArrayList<Guest> guestList = outPutBookingFileToList();
-        if (guestList == null) {
-            return true;
-        } else {
-            for (Guest guest : guestList) {
-                if (guest.getBookingCode().equals(bookingCode)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public ArrayList<Guest> outPutBookingFileToList() {
-        ArrayList<Guest> guestList = new ArrayList<>();
-
-        JSONParser jsonParser = new JSONParser();
-        try (FileReader reader = new FileReader(dataFolder + fileBookingGuestList)) {
-            Object obj = jsonParser.parse(reader);
-
-            JSONArray guestFile = (JSONArray) obj;
-            guestFile.forEach(guest -> writeGuestFileToList((JSONObject) guest, guestList));
-
-        } catch (IOException | ParseException e) {
-            return guestList;
-        }
-        return guestList;
-    }
-
-    public void writeGuestFileToList(JSONObject guest, ArrayList<Guest> guestList) {
-        JSONObject guestFile = (JSONObject) guest.get("guest");
-        if (guestFile != null) {
-            Guest guestObj = new Guest();
-            guestObj.setName((String) guestFile.get("name"));
-            guestObj.setPhoneNumber((String) guestFile.get("phoneNumber"));
-            guestObj.setDayArrival((String) guestFile.get("dayArrival"));
-            guestObj.setGuaranteeFee((String) guestFile.get("guaranteeFee"));
-            guestObj.setBookingCode((String) guestFile.get("bookingCode"));
-            guestObj.setMethodPayment((String) guestFile.get("methodPayment"));
-
-            guestList.add(guestObj);
-        }
-    }
-
-    public void inPutBookingListToFile(Guest guest) {
-        ArrayList<Guest> guestList = outPutBookingFileToList();
-        CompareGuestByDate compareByDate = new CompareGuestByDate();
-        Collections.sort(guestList, compareByDate);
-        guestList.add(guest);
-
-        JSONArray guestJSONList = new JSONArray();
-        for (Guest guestObject : guestList) {
-            JSONObject guestDetail = new JSONObject();
-            guestDetail.put("name", guestObject.getName());
-            guestDetail.put("phoneNumber", guestObject.getPhoneNumber());
-            guestDetail.put("dayArrival", guestObject.getDayArrival());
-            guestDetail.put("guaranteeFee", guestObject.getGuaranteeFee());
-            guestDetail.put("methodPayment", guestObject.getMethodPayment());
-            guestDetail.put("bookingCode", guestObject.getBookingCode());
-
-            JSONObject guestJSON = new JSONObject();
-            guestJSON.put("guest", guestDetail);
-
-            guestJSONList.add(guestJSON);
-        }
-
-        try (FileWriter file = new FileWriter(dataFolder + fileBookingGuestList)) {
-            file.write(guestJSONList.toJSONString());
-            file.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public ArrayList<Room> outPutRoomFileToList() {
-        ArrayList<Room> roomList = new ArrayList<>();
-
-        JSONParser jsonParser = new JSONParser();
-        try (FileReader reader = new FileReader(dataFolder + fileRoomList)) {
-            Object obj = jsonParser.parse(reader);
-
-            JSONArray roomFile = (JSONArray) obj;
-            roomFile.forEach(room -> writeRoomFileToList((JSONObject) room, roomList));
-
-        } catch (IOException | ParseException e) {
-            return roomList;
-        }
-        return roomList;
-    }
-
-    public void writeRoomFileToList(JSONObject room, ArrayList<Room> roomList) {
-        JSONObject roomFile = (JSONObject) room.get("room");
-
-        if (roomFile != null) {
-            Room roomObj = new Room();
-            roomObj.setNumber((String) roomFile.get("number"));
-            roomObj.setVacant((boolean) roomFile.get("vacant"));
-            roomObj.setGuestID((String) roomFile.get("guestID"));
-
-            roomList.add(roomObj);
-        }
-    }
-
-    public ArrayList<Guest> outPutInHouseFileToList() {
-        ArrayList<Guest> inHouseList = new ArrayList<>();
-
-        JSONParser jsonParser = new JSONParser();
-        try (FileReader reader = new FileReader(dataFolder + fileInHouseGuestList)) {
-            Object obj = jsonParser.parse(reader);
-
-            JSONArray guestFile = (JSONArray) obj;
-            guestFile.forEach(guest -> writeGuestFileToList((JSONObject) guest, inHouseList));
-
-        } catch (IOException | ParseException e) {
-            return inHouseList;
-        }
-        return inHouseList;
-    }
-
-    public void writeInHouseListToFile(Guest guest) {
-        ArrayList<Guest> guestList = outPutInHouseFileToList();
-        guestList.add(guest);
-
-        CompareGuestByDate compareByDate = new CompareGuestByDate();
-        Collections.sort(guestList, compareByDate);
-
-        JSONArray guestJSONList = new JSONArray();
-        for (Guest guestObject : guestList) {
-            JSONObject guestDetail = new JSONObject();
-            guestDetail.put("name", guestObject.getName());
-            guestDetail.put("phoneNumber", guestObject.getPhoneNumber());
-            guestDetail.put("dayArrival", guestObject.getDayArrival());
-            guestDetail.put("guaranteeFee", guestObject.getGuaranteeFee());
-            guestDetail.put("methodPayment", guestObject.getMethodPayment());
-            guestDetail.put("bookingCode", guestObject.getBookingCode());
-
-            JSONObject guestJSON = new JSONObject();
-            guestJSON.put("guest", guestDetail);
-
-            guestJSONList.add(guestJSON);
-        }
-
-        try (FileWriter file = new FileWriter(dataFolder + fileInHouseGuestList)) {
-            file.write(guestJSONList.toJSONString());
-            file.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void checkInGuestToRoom(String roomNumber, Guest guest) {
-        ArrayList<Guest> guestList = outPutBookingFileToList();
-        ArrayList<Room> roomList = outPutRoomFileToList();
-        writeInHouseListToFile(guest);
-
-        for (Room room : roomList) {
-            if (room.getNumber().equals(roomNumber)) {
-                room.setVacant(false);
-                room.setGuestID(guest.getBookingCode());
-            }
-        }
-
-        String Bookingcode = guest.getBookingCode();
-        guestList.removeIf(guestObj -> guestObj.getBookingCode().equals(Bookingcode));
-
-        JSONArray roomJSONList = new JSONArray();
-        for (Room roomObj : roomList) {
-            JSONObject roomDetail = new JSONObject();
-            roomDetail.put("number", roomObj.getNumber());
-            roomDetail.put("vacant", roomObj.isVacant());
-            roomDetail.put("guestID", roomObj.getGuestID());
-
-            JSONObject roomJSON = new JSONObject();
-            roomJSON.put("room", roomDetail);
-
-            roomJSONList.add(roomJSON);
-        }
-
-        try (FileWriter file = new FileWriter(dataFolder + fileRoomList)) {
-            file.write(roomJSONList.toJSONString());
-            file.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        JSONArray guestJSONList = new JSONArray();
-        for (Guest guestObject : guestList) {
-            JSONObject guestDetail = new JSONObject();
-            guestDetail.put("name", guestObject.getName());
-            guestDetail.put("phoneNumber", guestObject.getPhoneNumber());
-            guestDetail.put("dayArrival", guestObject.getDayArrival());
-            guestDetail.put("guaranteeFee", guestObject.getGuaranteeFee());
-            guestDetail.put("methodPayment", guestObject.getMethodPayment());
-            guestDetail.put("bookingCode", guestObject.getBookingCode());
-
-            JSONObject guestJSON = new JSONObject();
-            guestJSON.put("guest", guestDetail);
-
-            guestJSONList.add(guestJSON);
-        }
-
-        try (FileWriter file = new FileWriter(dataFolder + fileBookingGuestList)) {
-            file.write(guestJSONList.toJSONString());
-            file.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void checkOutGuestToRoom(String roomNumber) {
-        ArrayList<Room> roomList = outPutRoomFileToList();
-        ArrayList<Guest> inHouseList = outPutInHouseFileToList();
-
-        for (Room room : roomList) {
-            if (room.getNumber().equals(roomNumber)) {
-                for (Guest guest : inHouseList) {
-                    if (room.getGuestID().equals(guest.getBookingCode())) {
-                        inHouseList.remove(guest);
-                    }
-                }
-                room.setVacant(true);
-                room.setGuestID(null);
-            }
-        }
-
-        JSONArray roomJSONList = new JSONArray();
-        for (Room roomObj : roomList) {
-            JSONObject roomDetail = new JSONObject();
-            roomDetail.put("number", roomObj.getNumber());
-            roomDetail.put("vacant", roomObj.isVacant());
-            roomDetail.put("guestID", roomObj.getGuestID());
-
-            JSONObject roomJSON = new JSONObject();
-            roomJSON.put("room", roomDetail);
-
-            roomJSONList.add(roomJSON);
-        }
-
-        try (FileWriter file = new FileWriter(dataFolder + fileRoomList)) {
-            file.write(roomJSONList.toJSONString());
-            file.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        JSONArray guestJSONList = new JSONArray();
-        for (Guest guestObject : inHouseList) {
-            JSONObject guestDetail = new JSONObject();
-            guestDetail.put("name", guestObject.getName());
-            guestDetail.put("phoneNumber", guestObject.getPhoneNumber());
-            guestDetail.put("dayArrival", guestObject.getDayArrival());
-            guestDetail.put("guaranteeFee", guestObject.getGuaranteeFee());
-            guestDetail.put("methodPayment", guestObject.getMethodPayment());
-            guestDetail.put("bookingCode", guestObject.getBookingCode());
-
-            JSONObject guestJSON = new JSONObject();
-            guestJSON.put("guest", guestDetail);
-
-            guestJSONList.add(guestJSON);
-        }
-
-        try (FileWriter file = new FileWriter(dataFolder + fileInHouseGuestList)) {
-            file.write(guestJSONList.toJSONString());
-            file.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void checkInGuestByName(String name) {
-        ArrayList<Guest> guestList = outPutBookingFileToList();
-
-        String guestName = toTitleCase(name);
-        boolean isHaveNameOnList = false;
-        for (Guest guest : guestList) {
-            if (guest.getName().equals(guestName)) {
-                System.out.print("\n-----------------------Guest's Information:---------------------------------");
-                System.out.print("\n" + guest.toString());
-                isHaveNameOnList = true;
-            }
-        }
-        if (isHaveNameOnList) {
-            boolean isBookingCodeValid = false;
-            while (!isBookingCodeValid) {
-                System.out.print("\nEnter guest's booking code or 'B' to back to Check-in menu: ");
-                String inputBookingCode = input.nextLine();
-                if (inputBookingCode.toUpperCase().equals("B")) {
-                    checkInMenu();
-                } else {
-                    if (inputBookingCode.charAt(0) == '#') {
-                        System.out.print("\nBooking Code must be number! please do not enter '#'");
-                    } else {
-                        Pattern pattern = Pattern.compile("\\d*");
-                        Matcher matcher = pattern.matcher(inputBookingCode);
-                        if (matcher.matches()) {
-                            String bookingCode = "#" + inputBookingCode;
-                            isBookingCodeValid = true;
-                            checkInGuestByBookingCode(bookingCode);
-                        } else {
-                            System.out.print("\nBooking Code must be number!");
-                        }
-                    }
-                }
-            }
-        } else {
-            System.out.print("\nCan't find that name in guest List!");
-            checkInWithReservation();
-        }
-    }
-
-    public void checkInGuestByBookingCode(String bookingCode) {
-        ArrayList<Guest> guestList = outPutBookingFileToList();
-        ArrayList<Room> roomsList = outPutRoomFileToList();
-
-        for (Guest guest : guestList) {
-            if (guest.getBookingCode().equals(bookingCode)) {
-                boolean isRoomValid = false;
-                do {
-                    System.out.print("\n-----------------------------Guest's Information:---------------------------");
-                    System.out.print("\n" + guest.toString());
-                    System.out.print("\n----------------------------------------------------------------------------");
-                    System.out.print("\n------------------------------Room's Information:---------------------------");
-                    showRoomList();
-                    System.out.print("\n----------------------------------------------------------------------------");
-                    System.out.print("\nEnter number of Room for guest or 'B' to back to Check-in menu: ");
-                    String roomNumber = input.nextLine();
-                    if (roomNumber.toUpperCase().equals("B")) {
-                        checkInMenu();
-                    } else {
-                        for (Room room : roomsList) {
-                            if (room.getNumber().equals(roomNumber)) {
-                                if (room.isVacant()) {
-                                    checkInGuestToRoom(roomNumber, guest);
-                                    String history = "Check-in guest with booking code: " + guest.getBookingCode();
-                                    addStaffHistory(history);
-                                    System.out.print("\n---------------------------CHECK-IN-SUCCESS---------------------------------");
-                                    isRoomValid = true;
-                                }
-                            }
-                        }
-                        if (!isRoomValid) {
-                            System.out.print("\nRoom number is not valid!!! Please Enter another room number");
-                        }
-                    }
-                } while (!isRoomValid);
-                mainMenu();
-            }
-        }
-        System.out.print("\nCan't find that booking code in guest List!");
-        checkInWithReservation();
-    }
-
-    public void showRoomList() {
-        ArrayList<Room> roomsList = outPutRoomFileToList();
-        for (Room room : roomsList) {
-            System.out.print("\n" + room.toString());
-        }
-    }
-
     public Guest changeBookingInformation(Guest guest) {
         boolean isInfoCorrect = false;
         do {
@@ -957,6 +525,7 @@ public class SystemProcessStaff implements ISystemProcess {
                         break;
                     case changeName:
                         String newName = "";
+                        boolean isNewNameValid = false;
                         do {
                             System.out.print("\nEnter new guest's name of reservation or press 'B' to back Change menu: ");
                             String inputName = input.nextLine();
@@ -965,11 +534,18 @@ public class SystemProcessStaff implements ISystemProcess {
                             } else if (inputName.trim().length() == 0) {
                                 System.out.print("\nInput name is invalid! Guest's name can't be null or blank");
                             } else {
-                                newName = toTitleCase(inputName);
-                                guest.setName(newName);
-                                guest = changeBookingInformation(guest);
+                                Pattern pattern = Pattern.compile("^([A-Za-z]*[ ]?)+$");
+                                Matcher matcher = pattern.matcher(inputName);
+                                if (matcher.matches()) {
+                                    newName = toTitleCase(inputName);
+                                    guest.setName(newName);
+                                    guest = changeBookingInformation(guest);
+                                    isNewNameValid = true;
+                                } else {
+                                    System.out.print("\nInput name is invalid! Guest's name can't have number or special character");
+                                }
                             }
-                        } while (newName.equals(""));
+                        } while (!isNewNameValid);
                         isInfoCorrect = true;
                         break;
                     case changePhoneNumber:
@@ -1076,6 +652,202 @@ public class SystemProcessStaff implements ISystemProcess {
         return guest;
     }
 
+    public void checkInWithReservation() {
+        boolean isOutCheckInSystem = false;
+        do {
+            System.out.print("\n============================================================================");
+            System.out.print("\n__________________________LOOKING-FOR-RESERVATION___________________________");
+            System.out.print("\n|| 1. Enter 'N' to find reservation by name                               ||");
+            System.out.print("\n|| 2. Enter 'C' to find reservation by booking code                       ||");
+            System.out.print("\n|| 3. Enter 'B' to back to Check-in menu                                  ||");
+            System.out.print("\n----------------------------------------------------------------------------");
+            System.out.print("\n||Enter your choice: ");
+            String choice = input.nextLine();
+            if (choice.length() == 1) {
+                int option = choice.toUpperCase().charAt(0);
+                final int byName = 78;
+                final int byBookingCode = 67;
+
+                switch (option) {
+                    case byName:
+                        isOutCheckInSystem = true;
+                        boolean isNameValid = false;
+                        while (!isNameValid) {
+                            System.out.print("\nEnter guest's name: ");
+                            String name = input.nextLine();
+                            if (name.trim().length() == 0) {
+                                System.out.print("\nGuest's name can't be null or blank");
+                            } else {
+                                checkInGuestByName(name);
+                            }
+                        }
+                        break;
+                    case byBookingCode:
+                        isOutCheckInSystem = true;
+                        boolean isBookingCodeValid = false;
+                        while (!isBookingCodeValid) {
+                            System.out.print("\nEnter guest's booking code: ");
+                            String inputBookingCode = input.nextLine();
+                            if (inputBookingCode.charAt(0) == '#') {
+                                System.out.print("\nBooking Code must be number! please do not enter '#'");
+                            } else {
+                                Pattern pattern = Pattern.compile("\\d*");
+                                Matcher matcher = pattern.matcher(inputBookingCode);
+                                if (matcher.matches()) {
+                                    String bookingCode = "#" + inputBookingCode;
+                                    isBookingCodeValid = true;
+                                    checkInGuestByBookingCode(bookingCode);
+                                } else {
+                                    System.out.print("\nBooking Code must be number!");
+                                }
+                            }
+                        }
+                        break;
+                    case backToThePreviousMenu:
+                        mainMenu();
+                        break;
+                    default:
+                        System.out.print("Request undefined! Please follow the instruction!");
+                }
+            } else {
+                System.out.print("Request undefined! Please follow the instruction!");
+            }
+        } while (!isOutCheckInSystem);
+    }
+
+    public void checkInWithoutReservation() {
+        Guest guest = takeGuestInformation();
+        addGuestToBookingFile(guest);
+        checkInGuestByBookingCode(guest.getBookingCode());
+        mainMenu();
+    }
+
+    public void checkInGuestByName(String name) {
+        ArrayList<Guest> guestList = outPutBookingFileToList();
+
+        String guestName = toTitleCase(name);
+        boolean isHaveNameOnList = false;
+        for (Guest guest : guestList) {
+            if (guest.getName().equals(guestName)) {
+                System.out.print("\n-----------------------Guest's Information:---------------------------------");
+                System.out.print("\n" + guest.toString());
+                isHaveNameOnList = true;
+            }
+        }
+        if (isHaveNameOnList) {
+            boolean isBookingCodeValid = false;
+            while (!isBookingCodeValid) {
+                System.out.print("\nEnter guest's booking code or 'B' to back to Check-in menu: ");
+                String inputBookingCode = input.nextLine();
+                if (inputBookingCode.toUpperCase().equals("B")) {
+                    checkInMenu();
+                } else {
+                    if (inputBookingCode.charAt(0) == '#') {
+                        System.out.print("\nBooking Code must be number! please do not enter '#'");
+                    } else {
+                        Pattern pattern = Pattern.compile("\\d*");
+                        Matcher matcher = pattern.matcher(inputBookingCode);
+                        if (matcher.matches()) {
+                            String bookingCode = "#" + inputBookingCode;
+                            isBookingCodeValid = true;
+                            checkInGuestByBookingCode(bookingCode);
+                        } else {
+                            System.out.print("\nBooking Code must be number!");
+                        }
+                    }
+                }
+            }
+        } else {
+            System.out.print("\nCan't find that name in guest List!");
+            checkInWithReservation();
+        }
+    }
+
+    public void checkInGuestByBookingCode(String bookingCode) {
+        ArrayList<Guest> guestList = outPutBookingFileToList();
+        ArrayList<Room> roomsList = outPutRoomFileToList();
+
+        for (Guest guest : guestList) {
+            if (guest.getBookingCode().equals(bookingCode)) {
+                boolean isRoomValid = false;
+                do {
+                    System.out.print("\n-----------------------------Guest's Information:---------------------------");
+                    System.out.print("\n" + guest.toString());
+                    System.out.print("\n----------------------------------------------------------------------------");
+                    System.out.print("\n------------------------------Room's Information:---------------------------");
+                    showRoomList();
+                    System.out.print("\n----------------------------------------------------------------------------");
+                    System.out.print("\nEnter number of Room for guest or 'B' to back to Check-in menu: ");
+                    String roomNumber = input.nextLine();
+                    if (roomNumber.toUpperCase().equals("B")) {
+                        checkInMenu();
+                    } else {
+                        for (Room room : roomsList) {
+                            if (room.getNumber().equals(roomNumber)) {
+                                if (room.isVacant()) {
+                                    checkInGuestToRoom(roomNumber, guest);
+                                    String history = "Check-in guest with booking code: " + guest.getBookingCode();
+                                    addStaffHistory(history);
+                                    System.out.print("\n---------------------------CHECK-IN-SUCCESS---------------------------------");
+                                    isRoomValid = true;
+                                }
+                            }
+                        }
+                        if (!isRoomValid) {
+                            System.out.print("\nRoom number is not valid!!! Please Enter another room number");
+                        }
+                    }
+                } while (!isRoomValid);
+                mainMenu();
+            }
+        }
+        System.out.print("\nCan't find that booking code in guest List!");
+        checkInWithReservation();
+    }
+
+    public void checkInGuestToRoom(String roomNumber, Guest guest) {
+        ArrayList<Guest> guestList = outPutBookingFileToList();
+        ArrayList<Room> roomList = outPutRoomFileToList();
+        addGuestToInHouseGuestFile(guest);
+
+        for (Room room : roomList) {
+            if (room.getNumber().equals(roomNumber)) {
+                room.setVacant(false);
+                room.setGuestID(guest.getBookingCode());
+            }
+        }
+
+        String Bookingcode = guest.getBookingCode();
+        guestList.removeIf(guestObj -> guestObj.getBookingCode().equals(Bookingcode));
+
+        writeRoomListToFile(roomList);
+        writeBookingListToFile(guestList);
+    }
+
+    public void checkOutGuestToRoom(String roomNumber) {
+        ArrayList<Room> roomList = outPutRoomFileToList();
+        ArrayList<Guest> inHouseList = outPutInHouseFileToList();
+
+        for (Room room : roomList) {
+            if (room.getNumber().equals(roomNumber)) {
+                inHouseList.removeIf(guest -> guest.getBookingCode().equals(room.getGuestID()));
+                room.setVacant(true);
+                room.setGuestID(null);
+            }
+        }
+
+        writeInHouseGuestListToFile(inHouseList);
+        writeRoomListToFile(roomList);
+    }
+
+
+    public void showRoomList() {
+        ArrayList<Room> roomsList = outPutRoomFileToList();
+        for (Room room : roomsList) {
+            System.out.print("\n" + room.toString());
+        }
+    }
+
     public void addStaffHistory(String history) {
         String staffID = staff.getID();
         ArrayList<Staff> staffList = outPutStaffFileToList();
@@ -1093,4 +865,244 @@ public class SystemProcessStaff implements ISystemProcess {
         writeStaffListToFile(staffList);
     }
 
+
+    public ArrayList<Guest> outPutBookingFileToList() {
+        ArrayList<Guest> guestList = new ArrayList<>();
+
+        JSONParser jsonParser = new JSONParser();
+        try (FileReader reader = new FileReader(dataFolder + fileBookingGuestList)) {
+            Object obj = jsonParser.parse(reader);
+
+            JSONArray guestFile = (JSONArray) obj;
+            guestFile.forEach(guest -> writeGuestFileToList((JSONObject) guest, guestList));
+
+        } catch (IOException | ParseException e) {
+            return guestList;
+        }
+        CompareGuestByDate compareByDate = new CompareGuestByDate();
+        Collections.sort(guestList, compareByDate);
+        return guestList;
+    }
+
+    public void addGuestToBookingFile(Guest guest) {
+        ArrayList<Guest> guestList = outPutBookingFileToList();
+        CompareGuestByDate compareByDate = new CompareGuestByDate();
+        Collections.sort(guestList, compareByDate);
+        guestList.add(guest);
+
+        JSONArray guestJSONList = new JSONArray();
+        for (Guest guestObject : guestList) {
+            JSONObject guestDetail = new JSONObject();
+            guestDetail.put("name", guestObject.getName());
+            guestDetail.put("phoneNumber", guestObject.getPhoneNumber());
+            guestDetail.put("dayArrival", guestObject.getDayArrival());
+            guestDetail.put("guaranteeFee", guestObject.getGuaranteeFee());
+            guestDetail.put("methodPayment", guestObject.getMethodPayment());
+            guestDetail.put("bookingCode", guestObject.getBookingCode());
+
+            JSONObject guestJSON = new JSONObject();
+            guestJSON.put("guest", guestDetail);
+
+            guestJSONList.add(guestJSON);
+        }
+
+        try (FileWriter file = new FileWriter(dataFolder + fileBookingGuestList)) {
+            file.write(guestJSONList.toJSONString());
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeBookingListToFile(ArrayList<Guest> BookingList) {
+        CompareGuestByDate compareByDate = new CompareGuestByDate();
+        Collections.sort(BookingList, compareByDate);
+        JSONArray guestJSONList = new JSONArray();
+        for (Guest guestObject : BookingList) {
+            JSONObject guestDetail = new JSONObject();
+            guestDetail.put("name", guestObject.getName());
+            guestDetail.put("phoneNumber", guestObject.getPhoneNumber());
+            guestDetail.put("dayArrival", guestObject.getDayArrival());
+            guestDetail.put("guaranteeFee", guestObject.getGuaranteeFee());
+            guestDetail.put("methodPayment", guestObject.getMethodPayment());
+            guestDetail.put("bookingCode", guestObject.getBookingCode());
+
+            JSONObject guestJSON = new JSONObject();
+            guestJSON.put("guest", guestDetail);
+
+            guestJSONList.add(guestJSON);
+        }
+
+        try (FileWriter file = new FileWriter(dataFolder + fileBookingGuestList)) {
+            file.write(guestJSONList.toJSONString());
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeGuestFileToList(JSONObject guest, ArrayList<Guest> guestList) {
+        JSONObject guestFile = (JSONObject) guest.get("guest");
+        if (guestFile != null) {
+            Guest guestObj = new Guest();
+            guestObj.setName((String) guestFile.get("name"));
+            guestObj.setPhoneNumber((String) guestFile.get("phoneNumber"));
+            guestObj.setDayArrival((String) guestFile.get("dayArrival"));
+            guestObj.setGuaranteeFee((String) guestFile.get("guaranteeFee"));
+            guestObj.setBookingCode((String) guestFile.get("bookingCode"));
+            guestObj.setMethodPayment((String) guestFile.get("methodPayment"));
+
+            guestList.add(guestObj);
+        }
+    }
+
+    public ArrayList<Guest> outPutInHouseFileToList() {
+        ArrayList<Guest> inHouseList = new ArrayList<>();
+
+        JSONParser jsonParser = new JSONParser();
+        try (FileReader reader = new FileReader(dataFolder + fileInHouseGuestList)) {
+            Object obj = jsonParser.parse(reader);
+
+            JSONArray guestFile = (JSONArray) obj;
+            guestFile.forEach(guest -> writeGuestFileToList((JSONObject) guest, inHouseList));
+
+        } catch (IOException | ParseException e) {
+            return inHouseList;
+        }
+        return inHouseList;
+    }
+
+    public void addGuestToInHouseGuestFile(Guest guest) {
+        ArrayList<Guest> guestList = outPutInHouseFileToList();
+        guestList.add(guest);
+
+        CompareGuestByDate compareByDate = new CompareGuestByDate();
+        Collections.sort(guestList, compareByDate);
+
+        JSONArray guestJSONList = new JSONArray();
+        for (Guest guestObject : guestList) {
+            JSONObject guestDetail = new JSONObject();
+            guestDetail.put("name", guestObject.getName());
+            guestDetail.put("phoneNumber", guestObject.getPhoneNumber());
+            guestDetail.put("dayArrival", guestObject.getDayArrival());
+            guestDetail.put("guaranteeFee", guestObject.getGuaranteeFee());
+            guestDetail.put("methodPayment", guestObject.getMethodPayment());
+            guestDetail.put("bookingCode", guestObject.getBookingCode());
+
+            JSONObject guestJSON = new JSONObject();
+            guestJSON.put("guest", guestDetail);
+
+            guestJSONList.add(guestJSON);
+        }
+
+        try (FileWriter file = new FileWriter(dataFolder + fileInHouseGuestList)) {
+            file.write(guestJSONList.toJSONString());
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeInHouseGuestListToFile(ArrayList<Guest> inHouseList) {
+        JSONArray guestJSONList = new JSONArray();
+        for (Guest guestObject : inHouseList) {
+            JSONObject guestDetail = new JSONObject();
+            guestDetail.put("name", guestObject.getName());
+            guestDetail.put("phoneNumber", guestObject.getPhoneNumber());
+            guestDetail.put("dayArrival", guestObject.getDayArrival());
+            guestDetail.put("guaranteeFee", guestObject.getGuaranteeFee());
+            guestDetail.put("methodPayment", guestObject.getMethodPayment());
+            guestDetail.put("bookingCode", guestObject.getBookingCode());
+
+            JSONObject guestJSON = new JSONObject();
+            guestJSON.put("guest", guestDetail);
+
+            guestJSONList.add(guestJSON);
+        }
+
+        try (FileWriter file = new FileWriter(dataFolder + fileInHouseGuestList)) {
+            file.write(guestJSONList.toJSONString());
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public ArrayList<Room> outPutRoomFileToList() {
+        ArrayList<Room> roomList = new ArrayList<>();
+
+        JSONParser jsonParser = new JSONParser();
+        try (FileReader reader = new FileReader(dataFolder + fileRoomList)) {
+            Object obj = jsonParser.parse(reader);
+
+            JSONArray roomFile = (JSONArray) obj;
+            roomFile.forEach(room -> writeRoomFileToList((JSONObject) room, roomList));
+
+        } catch (IOException | ParseException e) {
+            return roomList;
+        }
+        return roomList;
+    }
+
+    public void writeRoomFileToList(JSONObject room, ArrayList<Room> roomList) {
+        JSONObject roomFile = (JSONObject) room.get("room");
+
+        if (roomFile != null) {
+            Room roomObj = new Room();
+            roomObj.setNumber((String) roomFile.get("number"));
+            roomObj.setVacant((boolean) roomFile.get("vacant"));
+            roomObj.setGuestID((String) roomFile.get("guestID"));
+
+            roomList.add(roomObj);
+        }
+    }
+
+    public void writeRoomListToFile(ArrayList<Room> roomList) {
+        JSONArray roomJSONList = new JSONArray();
+        for (Room roomObj : roomList) {
+            JSONObject roomDetail = new JSONObject();
+            roomDetail.put("number", roomObj.getNumber());
+            roomDetail.put("vacant", roomObj.isVacant());
+            roomDetail.put("guestID", roomObj.getGuestID());
+
+            JSONObject roomJSON = new JSONObject();
+            roomJSON.put("room", roomDetail);
+
+            roomJSONList.add(roomJSON);
+        }
+
+        try (FileWriter file = new FileWriter(dataFolder + fileRoomList)) {
+            file.write(roomJSONList.toJSONString());
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public String toTitleCase(String inputString) {
+        String[] arr = inputString.split(" ");
+        StringBuffer stringBuffer = new StringBuffer();
+
+        for (int i = 0; i < arr.length; i++) {
+            stringBuffer.append(Character.toUpperCase(arr[i].charAt(0)))
+                    .append(arr[i].substring(1)).append(" ");
+        }
+        return stringBuffer.toString().trim();
+    }
+
+    public boolean isBookingCodeSuitable(String bookingCode) {
+        ArrayList<Guest> guestList = outPutBookingFileToList();
+        if (guestList == null) {
+            return true;
+        } else {
+            for (Guest guest : guestList) {
+                if (guest.getBookingCode().equals(bookingCode)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
